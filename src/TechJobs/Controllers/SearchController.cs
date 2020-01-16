@@ -10,6 +10,7 @@ namespace TechJobs.Controllers
         {
             ViewBag.columns = ListController.columnChoices;
             ViewBag.title = "Search";
+            ViewBag.error = "";
             return View();
         }
 
@@ -18,19 +19,26 @@ namespace TechJobs.Controllers
         public IActionResult Results(string searchType, string searchTerm)
         {
             ViewBag.columns = ListController.columnChoices;
-
             List<Dictionary<string, string>> jobs;
-            if (searchType.Equals("all"))
-            {
-                jobs = JobData.FindByValue(searchTerm);
-            }
-            else
-            {
-                jobs = JobData.FindByColumnAndValue(searchType, searchTerm);
-            }
 
-            ViewBag.jobs = jobs;
-            
+            if (searchTerm == null)
+            {
+                ViewBag.error = "Please enter a search term";
+            } else
+            {
+                if (searchType.Equals("all"))
+                {
+                    jobs = JobData.FindByValue(searchTerm);
+                }
+                else
+                {
+                    jobs = JobData.FindByColumnAndValue(searchType, searchTerm);
+                }
+
+                ViewBag.jobs = jobs;
+
+            }
+          
             return View("Index");
         }
 
